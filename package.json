@@ -1,25 +1,28 @@
 {
-  "name": "server",
+  "name": "chat-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "<p>Fork repository and clone it</p> <pre>https://github.com/ibrahimdenizz/chat-app.git</pre> <p>Install dependencies</p> <pre> npm install cd client/ && npm install </pre>",
   "main": "index.js",
   "scripts": {
-    "client-install": "npm install --prefix client",
-    "start": "node index.js",
-    "server": "nodemon index.js ",
-    "client": "npm run start --prefix client",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
-    "server-build": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "server:start": "cd server && npm start",
+    "server:dev": "cd server && npm run dev",
+    "client:start": "cd client && npm build",
+    "client:dev": "cd client && npm start",
+    "start": "concurrently \"npm run client:start\" \"npm run server:start\"",
+    "dev": "concurrently \"npm run client:dev\" \"npm run server:dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ibrahimdenizz/chat-app.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ibrahimdenizz/chat-app/issues"
+  },
+  "homepage": "https://github.com/ibrahimdenizz/chat-app#readme",
   "dependencies": {
-    "bcrypt": "^5.0.0",
-    "config": "^3.3.3",
-    "express": "^4.17.1",
-    "joi": "^17.4.0",
-    "mongoose": "^5.11.17",
-    "socket.io": "^3.1.1"
+    "concurrently": "^6.0.2"
   }
 }
