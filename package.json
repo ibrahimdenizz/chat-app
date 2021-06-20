@@ -7,7 +7,7 @@
     "server:start": "cd server && npm start",
     "server:dev": "cd server && npm run dev",
     "server:install": "cd server && npm install",
-    "client:start": "cd client && npm build",
+    "client:start": "cd client && sudo npm run build --unsafe-perm=true --allow-root",
     "client:dev": "cd client && npm start",
     "client:install": "cd client && npm install",
     "start": "concurrently \"npm run client:start\" \"npm run server:start\"",
@@ -27,8 +27,5 @@
   "homepage": "https://github.com/ibrahimdenizz/chat-app#readme",
   "dependencies": {
     "concurrently": "^6.0.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
   }
 }
