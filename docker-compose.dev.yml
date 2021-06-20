@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: dev.Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./client:/code
+    links:
+      - server
+  server:
+    build:
+      context: ./server
+      dockerfile: dev.Dockerfile
+    ports:
+      - 5000:5000
+    volumes:
+      - ./server:/code
+    environment:
+      - chatApp_db_uri=mongodb://mongo:27017
+    links:
+      - mongo
+  mongo:
+    image: mongo:4.4.6
+    ports:
+      - 27017:27017
+    volumes:
+      - /var/lib/mongodb:/data/db
