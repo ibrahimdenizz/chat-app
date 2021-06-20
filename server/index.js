@@ -14,15 +14,13 @@ const io = require("socket.io")(http, {
   },
 });
 
-const uri = config.get("db_uri") + "/chatApp";
-
 const corsOptions = {
   origin: config.get("url"),
   optionSuccessStatus: 200,
 };
 
 mongoose
-  .connect(uri, {
+  .connect(config.get("db_uri"), {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
