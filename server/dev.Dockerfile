@@ -5,7 +5,7 @@ RUN npm i -g nodemon
 RUN mkdir code
 WORKDIR /code
 
-COPY . .
+COPY package-lock.json package.json ./
 
 RUN npm ci
 
