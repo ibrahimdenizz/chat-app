@@ -14,7 +14,7 @@ RUN cd client && npm run build
 
 RUN mkdir server
 COPY ./server/package-lock.json ./server/package.json ./server/
-RUN cd client && npm ci
+RUN cd server && npm ci
 COPY ./server ./server
 
 # runtime stage
