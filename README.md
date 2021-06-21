@@ -1,5 +1,11 @@
 # Chat App
+Real time chat application
+
+### Live Demo
+<a href="https://ibrahimdeniz-chat-app.herokuapp.com">https://ibrahimdeniz-chat-app.herokuapp.com</a>
+
 ## How to install
+---
 Fork repository and clone it
 ```
 git clone https://github.com/ibrahimdenizz/chat-app.git
@@ -11,6 +17,7 @@ npm run build
 ```
 
 ## Run the app
+---
 For server
 ```
 npm run dev
@@ -23,6 +30,7 @@ docker-compose -f docker-compose.dev.yml up --build
 ```
 
 ## LICENSE
+---
 
 MIT License
 
