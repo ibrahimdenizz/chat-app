@@ -1,12 +1,15 @@
 const cors = require("cors");
-const users = require("./routers/users");
-const auth = require("./routers/auth");
-const mongoose = require("mongoose");
 const config = require("config");
+const mongoose = require("mongoose");
 const express = require("express");
 const path = require("path");
-const helmet = require('helmet');
-const morgan = require('morgan');
+const morgan = require("morgan");
+const helmet = require("helmet");
+const redis = require("redis");
+
+const users = require("./routers/users");
+const auth = require("./routers/auth");
+
 const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http, {
@@ -16,10 +19,12 @@ const io = require("socket.io")(http, {
   },
 });
 
-const corsOptions = {
-  origin: config.get("url"),
-  optionSuccessStatus: 200,
-};
+const redisClient = redis.createClient(process.env.redis_uri);
+redisClient.on("error", function (error) {
+  console.error(error);
+});
+redisClient.set("test", "Connect Redis");
+redisClient.get("test", (err, rep) => console.log(rep));
 
 mongoose
   .connect(config.get("db_uri"), {
@@ -30,8 +35,12 @@ mongoose
     console.log("Connect Db");
   });
 
-app.use(helmet())
-app.use(morgan("common"))
+const corsOptions = {
+  origin: config.get("url"),
+  optionSuccessStatus: 200,
+};
+app.use(helmet());
+app.use(morgan("common"));
 app.use(express.json());
 app.use(cors(corsOptions));
 
