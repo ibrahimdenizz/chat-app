@@ -3,15 +3,15 @@ import React, { useEffect } from "react";
 const UsersList = ({ users, socket, setUsers, rooms, setRooms, username }) => {
   useEffect(() => {
     socket.on("get online user", (onlineUsers) => {
+      console.log("online", onlineUsers);
       setUsers((prevUsers) => {
-        prevUsers.map((user) => {
+        prevUsers.forEach((user) => {
           user.isOnline = false;
-          user.socketId = 0;
         });
-        onlineUsers.map((user) => {
+        onlineUsers.forEach((user) => {
           prevUsers
-            .filter((a) => a.username === user.username)
-            .map((user2) => {
+            .filter((a) => a.username === user?.username)
+            .forEach((user2) => {
               user2.isOnline = true;
               user2.socketId = user.socketId;
             });
@@ -20,11 +20,11 @@ const UsersList = ({ users, socket, setUsers, rooms, setRooms, username }) => {
         return prevUsers;
       });
     });
-  }, []);
+  }, [socket, setUsers]);
 
   useEffect(() => {
     socket.emit("get online user", "get");
-  }, [users]);
+  }, [socket]);
 
   const onClick = (user) => {
     if (user.isOnline === true) {
