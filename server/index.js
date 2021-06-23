@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const config = require("config");
 const express = require("express");
 const path = require("path");
+const helmet = require('helmet');
+const morgan = require('morgan');
 const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http, {
@@ -28,8 +30,11 @@ mongoose
     console.log("Connect Db");
   });
 
+app.use(helmet())
+app.use(morgan("common"))
 app.use(express.json());
 app.use(cors(corsOptions));
+
 app.use("/api/users", users);
 app.use("/api/auth", auth);
 
