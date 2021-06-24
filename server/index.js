@@ -1,14 +1,7 @@
-const cors = require("cors");
 const config = require("config");
-const mongoose = require("mongoose");
 const express = require("express");
 const path = require("path");
-const morgan = require("morgan");
-const helmet = require("helmet");
 const redis = require("./util/redis-queries");
-
-const users = require("./routers/users");
-const auth = require("./routers/auth");
 
 const app = express();
 const http = require("http").Server(app);
@@ -19,26 +12,9 @@ const io = require("socket.io")(http, {
   },
 });
 
-mongoose
-  .connect(config.get("db_uri"), {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connect Db");
-  });
-
-const corsOptions = {
-  origin: config.get("url"),
-  optionSuccessStatus: 200,
-};
-app.use(helmet());
-app.use(morgan("common"));
-app.use(express.json());
-app.use(cors(corsOptions));
-
-app.use("/api/users", users);
-app.use("/api/auth", auth);
+require("./start/db")();
+require("./start/prod")(app);
+require("./start/routes")(app);
 
 let msgId = 0;
 
