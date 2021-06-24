@@ -17,7 +17,7 @@ const UsersList = ({ users, socket, setUsers, rooms, setRooms, username }) => {
             });
         });
 
-        return prevUsers;
+        return [...prevUsers];
       });
     });
   }, [socket, setUsers]);

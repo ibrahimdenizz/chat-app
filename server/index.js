@@ -5,7 +5,7 @@ const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 const helmet = require("helmet");
-const redis = require("redis");
+const redis = require("./util/redis-queries");
 
 const users = require("./routers/users");
 const auth = require("./routers/auth");
@@ -18,12 +18,6 @@ const io = require("socket.io")(http, {
     methods: ["GET", "POST"],
   },
 });
-
-const redisClient = redis.createClient(process.env.redis_uri);
-redisClient.on("error", function (error) {
-  console.error(error);
-});
-redisClient.on("connect", () => console.log("Connect Redis"));
 
 mongoose
   .connect(config.get("db_uri"), {
@@ -86,34 +80,25 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("online user", (user) => {
-    redisClient.get(user.username, (err, reply) => {
-      if (!reply)
-        redisClient.set(user.username, user.socketId, (err, reply) =>
-          console.log(user.username + " online")
-        );
-      redisClient.keys("*", (err, usernameReply) => {
-        redisClient.mget(usernameReply, (err, socketIdReply) => {
-          let onlineUsers = socketIdReply.map((socketId, index) => {
-            return { username: usernameReply[index], socketId };
-          });
-          console.log("online", onlineUsers, "socket", socketIdReply);
-          io.emit("get online user", onlineUsers);
-        });
-      });
-    });
+  socket.on("online user", async (user) => {
+    try {
+      await redis.setOnlineUser(user.username, user.socketId);
+      const onlineUsers = await redis.getOnlineUsers();
+      console.log("online", onlineUsers);
+      io.emit("get online user", onlineUsers);
+    } catch (error) {
+      console.error(error);
+    }
   });
 
-  socket.on("get online user", (get) => {
-    redisClient.keys("*", (err, usernameReply) => {
-      redisClient.mget(usernameReply, (err, socketIdReply) => {
-        let onlineUsers = socketIdReply.map((socketId, index) => {
-          return { username: usernameReply[index], socketId };
-        });
-        console.log("online", onlineUsers, "socket", socketIdReply);
-        io.emit("get online user", onlineUsers);
-      });
-    });
+  socket.on("get online user", async (get) => {
+    try {
+      const onlineUsers = await redis.getOnlineUsers();
+      console.log("online", onlineUsers);
+      io.emit("get online user", onlineUsers);
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   socket.on("join room", (room) => {
@@ -139,7 +124,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     if (currentUser) {
       console.log("message : left ", currentUser, msgId);
       if (currentUser.room) {
@@ -151,17 +136,14 @@ io.on("connection", (socket) => {
         });
         msgId++;
       }
-      redisClient.del(currentUser.username, () => {
-        redisClient.keys("*", (err, usernameReply) => {
-          redisClient.mget(usernameReply, (err, socketIdReply) => {
-            let onlineUsers = socketIdReply.map((socketId, index) => {
-              return { username: usernameReply[index], socketId };
-            });
-            console.log("Online", onlineUsers);
-            io.emit("get online user", onlineUsers);
-          });
-        });
-      });
+      try {
+        await redis.delOnlineUser(currentUser.username);
+        const onlineUsers = await redis.getOnlineUsers();
+        console.log("online", onlineUsers);
+        io.emit("get online user", onlineUsers);
+      } catch (error) {
+        console.error(error);
+      }
     }
   });
 });
