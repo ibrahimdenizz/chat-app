@@ -1,7 +1,13 @@
 const config = require("config");
 const express = require("express");
 const path = require("path");
+const { v4: uuid } = require("uuid");
 const redis = require("./util/redis-queries");
+
+const chatHandler = require("./socket/chatHandler");
+const userHandler = require("./socket/userHandler");
+const roomHandler = require("./socket/roomHandler");
+const disconnectHandler = require("./socket/disconnectHandler");
 
 const app = express();
 const http = require("http").Server(app);
@@ -16,113 +22,22 @@ require("./start/db")();
 require("./start/prod")(app);
 require("./start/routes")(app);
 
-let msgId = 0;
+io.on("connection", onConnection);
 
-io.on("connection", (socket) => {
-  console.log("connect");
-  let currentUser;
+function onConnection(socket) {
+  let currentUser = {
+    username: "",
+    room: "",
+  };
 
   socket.join("Public 1");
   socket.join("Public 2");
 
-  socket.on("chat message", (msg) => {
-    if (msg.data == "joined")
-      currentUser = {
-        username: msg.user,
-        room: msg.room,
-      };
-    if (msg.isPrivate) {
-      console.log("Private Message : ", msg, msgId);
-      io.to(socket.id).emit("chat message", { ...msg, id: msgId });
-      const receiver = msg.room;
-      msg.room = socket.id;
-      io.to(receiver).emit("chat message", { ...msg, id: msgId });
-    } else {
-      console.log("Room Message : ", msg, msgId);
-      io.to(msg.room).emit("chat message", { ...msg, id: msgId });
-    }
-    msgId++;
-  });
-
-  socket.on("Typing", (user) => {
-    console.log("Typing : ", user);
-    if (user.isPrivate) {
-      io.to(socket.id).emit("Typing", user);
-      const receiver = user.room;
-      user.room = socket.id;
-      io.to(receiver).emit("Typing", user);
-    } else {
-      io.to(user.room).emit("Typing", user);
-    }
-  });
-
-  socket.on("online user", async (user) => {
-    try {
-      await redis.setOnlineUser(user.username, user.socketId);
-      const onlineUsers = await redis.getOnlineUsers();
-      console.log("online", onlineUsers);
-      io.emit("get online user", onlineUsers);
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  socket.on("get online user", async (get) => {
-    try {
-      const onlineUsers = await redis.getOnlineUsers();
-      console.log("online", onlineUsers);
-      io.emit("get online user", onlineUsers);
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  socket.on("join room", (room) => {
-    socket.join(room);
-    console.log("Join Room", socket.rooms);
-  });
-
-  socket.on("leave room", (room) => {
-    socket.leave(room);
-    console.log("Leave Room", socket.rooms);
-    if (room && room.isPrivate) {
-      io.to(room.id).emit("chat message", {
-        data: "left",
-        user: currentUser.username,
-        room: socket.id,
-      });
-    } else if (room) {
-      io.to(room.id).emit("chat message", {
-        data: "left",
-        user: currentUser.username,
-        room: room.id,
-      });
-    }
-  });
-
-  socket.on("disconnect", async () => {
-    if (currentUser) {
-      console.log("message : left ", currentUser, msgId);
-      if (currentUser.room) {
-        io.emit("chat message", {
-          data: "left",
-          user: currentUser.username,
-          room: currentUser.room,
-          id: msgId,
-        });
-        msgId++;
-      }
-      try {
-        await redis.delOnlineUser(currentUser.username);
-        const onlineUsers = await redis.getOnlineUsers();
-        console.log("online", onlineUsers);
-        io.emit("get online user", onlineUsers);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  });
-});
+  chatHandler(io, socket, currentUser);
+  userHandler(io, socket, currentUser);
+  roomHandler(io, socket, currentUser);
+  disconnectHandler(io, socket, currentUser);
+}
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("build"));
