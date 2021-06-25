@@ -12,7 +12,7 @@ let url =
 
 const Chat = ({ username, socket }) => {
   const [messages, setMessages] = useState([]);
-  const [room, setRoom] = useState(1);
+  const [room, setRoom] = useState("Public 1");
   const [userTyping, setUserTyping] = useState({});
   const [addRoom, setAddRoom] = useState("");
   const [rooms, setRooms] = useState([
@@ -75,14 +75,16 @@ const Chat = ({ username, socket }) => {
     setRoom(1);
     socket.emit("leave room", room);
   };
-  useEffect(async () => {
-    try {
-      const { data } = await axios.get(url);
-      setUsers(data);
-    } catch (err) {
-      console.log(err.response.data.message);
-    }
-    socket.emit("online user", { username, socketId: socket.id });
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.get(url);
+        setUsers(data);
+      } catch (err) {
+        console.log(err?.response?.data?.message);
+      }
+      socket.emit("online user", { username, socketId: socket.id, room });
+    })();
   }, []);
 
   useEffect(() => {

@@ -1,7 +1,9 @@
 const redis = require("../util/redis-queries");
+const { v4: uuid } = require("uuid");
 
-module.exports = function (io, socket, currentUser) {
+module.exports = function (io, socket) {
   socket.on("disconnect", async () => {
+    let currentUser = await redis.getUser(socket.id);
     if (currentUser) {
       console.log("message : left ", currentUser);
       if (currentUser.room) {
@@ -12,14 +14,10 @@ module.exports = function (io, socket, currentUser) {
           id: uuid(),
         });
       }
-      try {
-        await redis.delOnlineUser(currentUser.username);
-        const onlineUsers = await redis.getOnlineUsers();
-        console.log("online", onlineUsers);
-        io.emit("get online user", onlineUsers);
-      } catch (error) {
-        console.error(error);
-      }
+      await redis.delUser(socket.id);
+      const onlineUsers = await redis.getOnlineUsers();
+      console.log("online", onlineUsers);
+      io.emit("get online user", onlineUsers);
     }
   });
 };

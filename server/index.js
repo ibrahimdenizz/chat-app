@@ -25,18 +25,13 @@ require("./start/routes")(app);
 io.on("connection", onConnection);
 
 function onConnection(socket) {
-  let currentUser = {
-    username: "",
-    room: "",
-  };
-
   socket.join("Public 1");
   socket.join("Public 2");
 
-  chatHandler(io, socket, currentUser);
-  userHandler(io, socket, currentUser);
-  roomHandler(io, socket, currentUser);
-  disconnectHandler(io, socket, currentUser);
+  chatHandler(io, socket);
+  userHandler(io, socket);
+  roomHandler(io, socket);
+  disconnectHandler(io, socket);
 }
 
 if (process.env.NODE_ENV === "production") {

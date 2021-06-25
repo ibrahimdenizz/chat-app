@@ -1,10 +1,13 @@
-module.exports = function (io, socket, currentUser) {
+const redis = require("../util/redis-queries");
+
+module.exports = function (io, socket) {
   socket.on("join room", (room) => {
     socket.join(room);
     console.log("Join Room", socket.rooms);
   });
 
-  socket.on("leave room", (room) => {
+  socket.on("leave room", async (room) => {
+    let currentUser = await redis.get(socket.id);
     socket.leave(room);
     console.log("Leave Room", socket.rooms);
     if (room && room.isPrivate) {

@@ -1,12 +1,15 @@
 const { v4: uuid } = require("uuid");
+const redis = require("../util/redis-queries");
 
-module.exports = function (io, socket, currentUser) {
-  socket.on("chat message", (msg) => {
+module.exports = function (io, socket) {
+  socket.on("chat message", async (msg) => {
     const msgId = uuid();
+    let currentUser = redis.getUser(socket.id);
     if (msg.data == "joined") {
       currentUser.username = msg.user;
       currentUser.room = msg.room;
     }
+
     if (msg.isPrivate) {
       console.log("Private Message : ", msg, msgId);
       io.to(socket.id).emit("chat message", { ...msg, id: msgId });

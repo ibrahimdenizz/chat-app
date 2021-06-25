@@ -1,24 +1,35 @@
+const { json } = require("express");
 const redis = require("redis");
 const redisClient = redis.createClient(process.env.redis_uri);
 
 redisClient.on("error", function (error) {
   console.error(error);
 });
-redisClient.on("connect", () => console.log("Connect Redis"));
+redisClient.on("connect", () => {
+  redisClient.flushdb(function (err, succeeded) {
+    console.log(succeeded); // will be true if successfull
+  });
+  console.log("Connect Redis");
+});
 
 // Queries
 
 function getOnlineUsers() {
   return new Promise((resolve, reject) => {
     try {
-      redisClient.keys("*", (err, usernameReply) => {
-        if (!Array.isArray(usernameReply)) usernameReply = [usernameReply];
-        redisClient.mget(usernameReply, (err, socketIdReply) => {
-          if (!Array.isArray(socketIdReply)) socketIdReply = [socketIdReply];
-          let onlineUsers = socketIdReply.map((socketId, index) => {
-            return { username: usernameReply[index], socketId };
-          });
-          resolve(onlineUsers);
+      redisClient.keys("*", (err, socketIdReply) => {
+        if (!Array.isArray(socketIdReply)) socketIdReply = [socketIdReply];
+        redisClient.mget(socketIdReply, (err, userReply) => {
+          if (!Array.isArray(userReply)) {
+            if (!userReply) reject("Not found any users");
+            else
+              resolve({ socketId: socketIdReply[index], ...JSON.parse(user) });
+          } else {
+            let onlineUsers = userReply.map((user, index) => {
+              return { socketId: socketIdReply[index], ...JSON.parse(user) };
+            });
+            resolve(onlineUsers);
+          }
         });
       });
     } catch (error) {
@@ -27,12 +38,27 @@ function getOnlineUsers() {
   });
 }
 
-function setOnlineUser(username, socketId) {
+function getUser(socketId) {
   return new Promise((resolve, reject) => {
-    redisClient.get(username, (err, reply) => {
+    redisClient.get(socketId, (err, reply) => {
+      if (reply) resolve({ socketId, ...JSON.parse(reply) });
+      else reject("User not found");
+    });
+  });
+}
+
+function setUser(user) {
+  return new Promise((resolve, reject) => {
+    redisClient.get(user.socketId, (err, reply) => {
       if (!reply) {
-        redisClient.set(username, socketId);
-        resolve(username);
+        redisClient.set(
+          user.socketId,
+          JSON.stringify({
+            username: user.username,
+            room: user.room,
+          })
+        );
+        resolve(user.username);
       } else {
         reject("User already online");
       }
@@ -40,12 +66,12 @@ function setOnlineUser(username, socketId) {
   });
 }
 
-function delOnlineUser(username) {
+function delUser(socketId) {
   return new Promise((resolve, reject) => {
-    redisClient.del(username, (err, reply) => {
-      redisClient.get(username, (err, reply) => {
+    redisClient.del(socketId, (err, reply) => {
+      redisClient.get(socketId, (err, reply) => {
         if (reply) reject("User can't be deleted");
-        else resolve(username);
+        else resolve(socketId);
       });
     });
   });
@@ -54,6 +80,7 @@ function delOnlineUser(username) {
 module.exports = {
   ...redisClient,
   getOnlineUsers,
-  setOnlineUser,
-  delOnlineUser,
+  getUser,
+  setUser,
+  delUser,
 };
