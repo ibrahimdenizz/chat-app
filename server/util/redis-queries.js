@@ -71,7 +71,7 @@ function setUser(user) {
 function updateUser(socketId, room) {
   return new Promise((resolve, reject) => {
     redisClient.get(socketId, (err, userReply) => {
-      if (reply) {
+      if (userReply) {
         redisClient.del(socketId, (err, okReply) => {
           const user = JSON.parse(userReply);
           user.room = room;
