@@ -1,6 +1,6 @@
-const { json } = require("express");
+const config = require("config");
 const redis = require("redis");
-const redisClient = redis.createClient(process.env.redis_uri);
+const redisClient = redis.createClient(config.get("redis_uri"));
 
 redisClient.on("error", function (error) {
   console.error(error);

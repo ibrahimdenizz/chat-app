@@ -1,4 +1,5 @@
 {
     "url" : "chatApp_url",
-    "db_uri" : "chatApp_db_uri"
+    "db_uri" : "chatApp_db_uri",
+    "redis_uri": "chatApp_redis_uri"
 }

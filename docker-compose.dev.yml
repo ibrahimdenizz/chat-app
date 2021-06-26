@@ -20,13 +20,13 @@ services:
       - ./server:/code
     environment:
       - chatApp_db_uri=mongodb://mongo:27017
-      - redis_uri=redis://redis:6379
+      - chatApp_redis_uri=redis://redis:6379
     links:
       - mongo
       - redis
   mongo:
     image: mongo:4.4.6
-    logging: 
+    logging:
       driver: none
     ports:
       - 27017:27017
@@ -34,5 +34,5 @@ services:
       - /var/lib/mongodb:/data/db
   redis:
     image: redis:6.2-alpine
-    ports: 
+    ports:
       - 6379:6379

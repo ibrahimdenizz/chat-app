@@ -1,5 +1,9 @@
 build:
   docker:
     web: prod.Dockerfile
+release:
+  command:
+    - redis-server
+  image: web
 run:
   web: node index.js

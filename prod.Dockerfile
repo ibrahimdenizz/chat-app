@@ -22,7 +22,11 @@ FROM alpine:3.14
 
 ENV NODE_ENV=production
 
-RUN apk add --update nodejs-current
+RUN apk add --update  nodejs-current  redis 
+
+ADD ./scripts/start.sh /start.sh
+RUN chmod 755 /start.sh
+
 RUN addgroup -S node && adduser -S node -G node
 USER node
 
@@ -33,4 +37,4 @@ RUN mkdir build/
 COPY --from=build --chown=node:node /code/client/build ./build
 COPY --from=build --chown=node:node /code/server .
 
-CMD ["node" , "index.js"]
+CMD ["/bin/sh" , "/start.sh"]
