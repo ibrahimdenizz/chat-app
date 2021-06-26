@@ -7,8 +7,9 @@ module.exports = function (io, socket) {
   });
 
   socket.on("leave room", async (room) => {
+    let currentUser;
     try {
-      let currentUser = await redis.get(socket.id);
+      currentUser = await redis.get(socket.id);
     } catch (error) {
       console.error(error);
     }
