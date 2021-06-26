@@ -12,7 +12,7 @@ let url =
 
 const Chat = ({ username, socket }) => {
   const [messages, setMessages] = useState([]);
-  const [room, setRoom] = useState("Public 1");
+  const [room, setRoom] = useState(1);
   const [userTyping, setUserTyping] = useState({});
   const [addRoom, setAddRoom] = useState("");
   const [rooms, setRooms] = useState([
@@ -80,6 +80,10 @@ const Chat = ({ username, socket }) => {
       try {
         const { data } = await axios.get(url);
         setUsers(data);
+        setRoom({
+          id: "Public 1",
+          name: "Public 1",
+        });
       } catch (err) {
         console.log(err?.response?.data?.message);
       }
@@ -102,9 +106,7 @@ const Chat = ({ username, socket }) => {
     endOfChat.current.scrollIntoView({ behavior: "smooth" });
   }, [messages, userTyping]);
   useEffect(() => {
-    socket.emit("chat message", {
-      data: "joined",
-      user: username,
+    socket.emit("change room", {
       room: room.id,
       isPrivate: room.isPrivate ? true : false,
     });

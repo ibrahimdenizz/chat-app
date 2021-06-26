@@ -6,6 +6,20 @@ module.exports = function (io, socket) {
     console.log("Join Room", socket.rooms);
   });
 
+  socket.on("change room", async ({ room, isPrivate }) => {
+    try {
+      const user = await redis.updateUser(socket.id, room.id);
+      io.to(room).emit("chat message", {
+        data: "joined",
+        user: user.username,
+        room: room,
+        isPrivate,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
   socket.on("leave room", async (room) => {
     let currentUser;
     try {
