@@ -56,9 +56,11 @@ function setUser(user) {
           JSON.stringify({
             username: user.username,
             room: user.room,
-          })
+          }),
+          (err, reply) => {
+            resolve(user.username);
+          }
         );
-        resolve(user.username);
       } else {
         reject("User already online");
       }
