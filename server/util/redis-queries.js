@@ -58,12 +58,28 @@ function setUser(user) {
             room: user.room,
           }),
           (err, reply) => {
-            resolve(user.username);
+            resolve(user);
           }
         );
       } else {
         reject("User already online");
       }
+    });
+  });
+}
+
+function updateUser(socketId, room) {
+  return new Promise((resolve, reject) => {
+    redisClient.get(socketId, (err, userReply) => {
+      if (reply) {
+        redisClient.del(socketId, (err, okReply) => {
+          const user = JSON.parse(userReply);
+          user.room = room;
+          redisClient.set(socketId, JSON.stringify(user), (err, okReply) => {
+            resolve({ socketId, ...user });
+          });
+        });
+      } else reject("User not found");
     });
   });
 }
@@ -84,5 +100,6 @@ module.exports = {
   getOnlineUsers,
   getUser,
   setUser,
+  updateUser,
   delUser,
 };
