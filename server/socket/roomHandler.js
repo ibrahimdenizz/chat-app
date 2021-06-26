@@ -7,7 +7,11 @@ module.exports = function (io, socket) {
   });
 
   socket.on("leave room", async (room) => {
-    let currentUser = await redis.get(socket.id);
+    try {
+      let currentUser = await redis.get(socket.id);
+    } catch (error) {
+      console.error(error);
+    }
     socket.leave(room);
     console.log("Leave Room", socket.rooms);
     if (room && room.isPrivate) {
