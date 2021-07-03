@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  production:
+    build:
+      context: .
+      dockerfile: prod.Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      - chatApp_db_uri=mongodb://mongo:27017
+      - PORT=3000
+    links:
+      - mongo
+  mongo:
+    image: mongo:4.4.6
+    logging:
+      driver: none
+    ports:
+      - 27017:27017
