@@ -1,10 +1,6 @@
 import React, { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSmile,
-  faSmileBeam,
-  faSmileWink,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSmile } from "@fortawesome/free-solid-svg-icons";
 import Picker from "emoji-picker-react";
 
 function TypeBar({ sendMessage, onType }) {
@@ -25,7 +21,7 @@ function TypeBar({ sendMessage, onType }) {
 
   const onOpenPicker = () => {
     setOpenPicker((prevValue) => {
-      if (prevValue == 1) return 0;
+      if (prevValue === 1) return 0;
       return 1;
     });
   };

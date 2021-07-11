@@ -28,9 +28,9 @@ const Login = ({ onSetUser }) => {
       onSetUser(response.data.username);
     } catch (err) {
       if (
-        err.response.status == 400 ||
-        err.response.status == 404 ||
-        err.response.status == 500
+        err.response.status === 400 ||
+        err.response.status === 404 ||
+        err.response.status === 500
       ) {
         const { data } = err.response;
 

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { io } from "socket.io-client";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import "./App.css";
-import Login from "./components/Login";
-import Chat from "./components/Chat";
+import Login from "./pages/Login";
+import Chat from "./pages/Chat";
 import NotFound from "./components/NotFound";
 import Register from "./components/Register";
 

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import Rooms from "./Rooms";
-import MessageBox from "./MessageBox";
-import TypeBar from "./TypeBar";
-import UsersList from "./UsersList";
+import Rooms from "../components/Rooms";
+import MessageBox from "../components/MessageBox";
+import TypeBar from "../components/TypeBar";
+import UsersList from "../components/UsersList";
 
 let url =
   process.env.NODE_ENV === "production"
