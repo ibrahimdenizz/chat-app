@@ -1,5 +1,4 @@
 const { v4: uuid } = require("uuid");
-const redis = require("../util/redis-queries");
 
 module.exports = function (io, socket) {
   socket.on("chat message", async (msg) => {

@@ -27,5 +27,9 @@
   "homepage": "https://github.com/ibrahimdenizz/chat-app#readme",
   "dependencies": {
     "concurrently": "^6.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.30.0",
+    "eslint-plugin-react": "^7.24.0"
   }
 }

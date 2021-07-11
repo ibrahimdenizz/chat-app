@@ -1,8 +1,6 @@
 const config = require("config");
 const express = require("express");
 const path = require("path");
-const { v4: uuid } = require("uuid");
-const redis = require("./util/redis-queries");
 
 const chatHandler = require("./socket/chatHandler");
 const userHandler = require("./socket/userHandler");

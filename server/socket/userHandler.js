@@ -12,7 +12,7 @@ module.exports = function (io, socket) {
     }
   });
 
-  socket.on("get online user", async (get) => {
+  socket.on("get online user", async () => {
     try {
       const onlineUsers = await redis.getOnlineUsers();
       console.log("online", onlineUsers);

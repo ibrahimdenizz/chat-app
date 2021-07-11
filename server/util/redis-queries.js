@@ -22,8 +22,7 @@ function getOnlineUsers() {
         redisClient.mget(socketIdReply, (err, userReply) => {
           if (!Array.isArray(userReply)) {
             if (!userReply) reject("Not found any users");
-            else
-              resolve({ socketId: socketIdReply[index], ...JSON.parse(user) });
+            else resolve({ socketId: socketIdReply, ...JSON.parse(userReply) });
           } else {
             let onlineUsers = userReply.map((user, index) => {
               return { socketId: socketIdReply[index], ...JSON.parse(user) };
@@ -57,7 +56,7 @@ function setUser(user) {
             username: user.username,
             room: user.room,
           }),
-          (err, reply) => {
+          () => {
             resolve(user);
           }
         );
@@ -72,10 +71,10 @@ function updateUser(socketId, room) {
   return new Promise((resolve, reject) => {
     redisClient.get(socketId, (err, userReply) => {
       if (userReply) {
-        redisClient.del(socketId, (err, okReply) => {
+        redisClient.del(socketId, () => {
           const user = JSON.parse(userReply);
           user.room = room;
-          redisClient.set(socketId, JSON.stringify(user), (err, okReply) => {
+          redisClient.set(socketId, JSON.stringify(user), () => {
             resolve({ socketId, ...user });
           });
         });
@@ -86,7 +85,7 @@ function updateUser(socketId, room) {
 
 function delUser(socketId) {
   return new Promise((resolve, reject) => {
-    redisClient.del(socketId, (err, reply) => {
+    redisClient.del(socketId, () => {
       redisClient.get(socketId, (err, reply) => {
         if (reply) reject("User can't be deleted");
         else resolve(socketId);
