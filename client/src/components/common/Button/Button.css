@@ -1,0 +1,29 @@
+.button {
+  border: none;
+  font: inherit;
+  outline: inherit;
+
+  margin: 10px 20px 10px 0;
+  padding: 10px 20px;
+  color: black;
+  border-radius: 10%;
+  transition: filter linear 0.2s;
+}
+
+.button:hover {
+  box-shadow: 2px 2px 2px 2px rgba(51, 51, 51, 0.1);
+  filter: brightness(75%);
+}
+
+.button:active {
+  filter: brightness(120%);
+}
+
+.button.button-primary {
+  background-color: #1976d2;
+  color: white;
+}
+
+.button.button-secondary {
+  background-color: lightgrey;
+}
