@@ -10,7 +10,7 @@
 .input-field:active,
 .input-field:focus {
   outline: none;
-  border-bottom: 2px solid #3f51b5;
+  border-bottom: 2px solid var(--indigo);
 }
 
 .input-field:not(:focus):hover {
@@ -33,13 +33,13 @@
 }
 
 .input:focus-within > .input-label {
-  color: #3f51b5;
+  color: var(--indigo);
 }
 
 /* invalid input */
 
 .input-error {
-  color: #f44336;
+  color: var(--danger);
   display: block;
   margin-top: 10px;
   font-size: calc(1em / 1.25);
@@ -48,17 +48,17 @@
 .input-invalid,
 .input-invalid:hover,
 .input-invalid:focus {
-  color: #f44336;
-  border-color: #f44336;
+  color: var(--danger);
+  border-color: var(--danger);
 }
 .input-field.input-invalid {
-  border-bottom: 2px solid #f44336;
+  border-bottom: 2px solid var(--danger);
 }
 
 .input-field.input-invalid:not(:focus):hover {
-  border-bottom: 2px solid #f44336;
+  border-bottom: 2px solid var(--danger);
 }
 
 .input:focus-within > .input-label.input-invalid {
-  color: #f44336;
+  color: var(--danger);
 }

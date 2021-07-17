@@ -20,10 +20,11 @@
 }
 
 .button.button-primary {
-  background-color: #1976d2;
+  background-color: var(--primary);
   color: white;
 }
 
 .button.button-secondary {
-  background-color: lightgrey;
+  background-color: var(--secondary);
+  color: white;
 }

@@ -11,7 +11,7 @@ const Input = ({
   autoFocus = false,
 }) => {
   return (
-    <div className={"input" + " " + className}>
+    <div className={"input" + (className ? " " + className : "")}>
       <label
         className={`input-label ${!value ? "" : "input-label-active"} ${
           !error ? "" : "input-invalid"
