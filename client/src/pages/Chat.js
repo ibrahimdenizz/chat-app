@@ -5,16 +5,19 @@ import MessageBox from "../components/MessageBox";
 import TypeBar from "../components/TypeBar";
 import UsersList from "../components/UsersList";
 
-let url =
+const URL =
   process.env.NODE_ENV === "production"
     ? "/api/users"
     : "http://localhost:5000/api/users";
+
+let date = Date.now();
 
 const Chat = ({ username, socket }) => {
   const [messages, setMessages] = useState([]);
   const [room, setRoom] = useState(1);
   const [userTyping, setUserTyping] = useState({});
   const [addRoom, setAddRoom] = useState("");
+  const [users, setUsers] = useState([]);
   const [rooms, setRooms] = useState([
     {
       id: "Public 1",
@@ -25,60 +28,13 @@ const Chat = ({ username, socket }) => {
       name: "Public 2",
     },
   ]);
-  const [users, setUsers] = useState([]);
-
-  let date = Date.now();
 
   const endOfChat = useRef();
 
-  const sendMessage = (data) => {
-    socket.emit("chat message", {
-      data,
-      user: username,
-      room: room.id,
-      isPrivate: room.isPrivate ? true : false,
-    });
-    console.log(messages);
-  };
-
-  const onChangeRoom = (room) => {
-    setRoom(room);
-  };
-
-  const onType = (msg) => {
-    if (msg !== "" && Date.now() - date > 1000) {
-      date = Date.now();
-      socket.emit("Typing", {
-        user: username,
-        room: room.id,
-        isPrivate: room.isPrivate ? true : false,
-      });
-    }
-  };
-
-  const onAddRoom = () => {
-    const index = users.findIndex((user) => user.username === addRoom);
-
-    if (addRoom !== "" && index === -1) {
-      socket.emit("join room", addRoom);
-      setRooms((prevRooms) => [...prevRooms, { id: addRoom, name: addRoom }]);
-      setAddRoom("");
-    }
-  };
-
-  const onLeaveRoom = (room) => {
-    setRooms((prevRooms) => {
-      const index = prevRooms.findIndex((prevRoom) => prevRoom.id === room.id);
-      prevRooms.splice(index, 1);
-      return prevRooms;
-    });
-    setRoom(1);
-    socket.emit("leave room", room);
-  };
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.get(url);
+        const { data } = await axios.get(URL);
         setUsers(data);
         setRoom({
           id: "Public 1",
@@ -162,6 +118,51 @@ const Chat = ({ username, socket }) => {
       </div>
     </div>
   );
+
+  function sendMessage(data) {
+    socket.emit("chat message", {
+      data,
+      user: username,
+      room: room.id,
+      isPrivate: room.isPrivate ? true : false,
+    });
+    console.log(messages);
+  }
+
+  function onChangeRoom(room) {
+    setRoom(room);
+  }
+
+  function onType(msg) {
+    if (msg !== "" && Date.now() - date > 1000) {
+      date = Date.now();
+      socket.emit("Typing", {
+        user: username,
+        room: room.id,
+        isPrivate: room.isPrivate ? true : false,
+      });
+    }
+  }
+
+  function onAddRoom() {
+    const index = users.findIndex((user) => user.username === addRoom);
+
+    if (addRoom !== "" && index === -1) {
+      socket.emit("join room", addRoom);
+      setRooms((prevRooms) => [...prevRooms, { id: addRoom, name: addRoom }]);
+      setAddRoom("");
+    }
+  }
+
+  function onLeaveRoom(room) {
+    setRooms((prevRooms) => {
+      const index = prevRooms.findIndex((prevRoom) => prevRoom.id === room.id);
+      prevRooms.splice(index, 1);
+      return prevRooms;
+    });
+    setRoom(1);
+    socket.emit("leave room", room);
+  }
 };
 
 export default Chat;

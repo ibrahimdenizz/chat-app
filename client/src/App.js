@@ -5,7 +5,7 @@ import "./App.css";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
 import NotFound from "./components/NotFound";
-import Register from "./components/Register";
+import Register from "./pages/Register";
 
 const url =
   process.env.NODE_ENV === "production" ? "" : "http://localhost:5000";

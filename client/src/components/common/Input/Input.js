@@ -1,7 +1,15 @@
 import React from "react";
 import "./Input.css";
 
-const Input = ({ label, type, value, onChange, error, className }) => {
+const Input = ({
+  label,
+  type,
+  value,
+  onChange,
+  error,
+  className,
+  autoFocus = false,
+}) => {
   return (
     <div className={"input" + " " + className}>
       <label
@@ -16,6 +24,7 @@ const Input = ({ label, type, value, onChange, error, className }) => {
         type={type}
         onChange={onChange}
         value={value}
+        autoFocus={autoFocus}
       />
       <p className="input-error">{error}</p>
     </div>
