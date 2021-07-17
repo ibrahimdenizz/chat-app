@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Button from "../components/common/Button/Button";
 import Input from "../components/common/Input/Input";
+import "./Form.css";
 
 let url =
   process.env.NODE_ENV === "production"
@@ -20,42 +21,34 @@ const Register = () => {
   });
 
   return (
-    <div className="d-flex justify-content-center align-content-center">
-      <form onSubmit={onSubmit} className="form-group">
+    <div className="form-container">
+      <form onSubmit={onSubmit}>
         {error.top === "" ? "" : <p className=" text-danger">{error.top}</p>}
-        <div className=" my-3">
-          <Input
-            label="Username"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            error={error.username}
-            autoFocus={true}
-          />
-        </div>
-        <div className="my-3">
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-            error={error.password}
-          />
-        </div>
-        <div className="my-3">
-          <Input
-            label="RePassword"
-            type="password"
-            value={rePassword}
-            onChange={handleRePasswordChange}
-            error={error.rePassword}
-          />
-        </div>
-        <div className="my-3">
-          <Button type="submit" className="mx-2" color="primary">
-            Register
-          </Button>
-        </div>
+        <Input
+          label="Username"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          error={error.username}
+          autoFocus={true}
+        />
+        <Input
+          label="Password"
+          type="password"
+          value={password}
+          onChange={handlePasswordChange}
+          error={error.password}
+        />
+        <Input
+          label="RePassword"
+          type="password"
+          value={rePassword}
+          onChange={handleRePasswordChange}
+          error={error.rePassword}
+        />
+        <Button type="submit" color="primary">
+          Register
+        </Button>
       </form>
     </div>
   );

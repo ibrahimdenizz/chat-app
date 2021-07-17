@@ -3,6 +3,7 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import Input from "../components/common/Input/Input";
 import Button from "../components/common/Button/Button";
+import "./Form.css";
 
 let URL =
   process.env.NODE_ENV === "production"
@@ -20,28 +21,24 @@ const Login = ({ onSetUser }) => {
   const history = useHistory();
 
   return (
-    <div className="d-flex justify-content-center align-content-center">
-      <form onSubmit={onSubmit} className="form-group">
+    <div className="form-container">
+      <form onSubmit={onSubmit}>
         {error.top === "" ? "" : <p className=" text-danger">{error.top}</p>}
-        <div className=" my-3">
-          <Input
-            label="Username"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            error={error.username}
-            autoFocus={true}
-          />
-        </div>
-        <div className="my-3">
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={error.password}
-          />
-        </div>
+        <Input
+          label="Username"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          error={error.username}
+          autoFocus={true}
+        />
+        <Input
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          error={error.password}
+        />
         <div className="d-flex">
           <Button type="submit" color="primary">
             Login
