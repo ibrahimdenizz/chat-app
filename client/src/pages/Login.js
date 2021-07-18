@@ -11,8 +11,8 @@ let URL =
     : "http://localhost:5000/api/auth";
 
 const Login = ({ onSetUser }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("test1");
+  const [password, setPassword] = useState("test1");
   const [error, setError] = useState({
     top: "",
     username: "",
