@@ -1,48 +1,64 @@
 import React, { useState } from "react";
 import axios from "axios";
-import config from "../../config";
+import config from "../config";
+
+import useFormInput from "../hooks/useFormInput";
 import Button from "../components/common/Button/Button";
 import Input from "../components/common/Input/Input";
+
 import "./Form.css";
 
 const URL = config.URL + "/api/users";
 
 const Register = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [rePassword, setRePassword] = useState("");
-  const [error, setError] = useState({
-    username: "",
-    password: "",
-    rePassword: "",
-    top: "",
-  });
+  const [
+    username,
+    setUsername,
+    handleUsernameChange,
+    usernameError,
+    handleUsernameErrorChange,
+  ] = useFormInput("");
+  const [
+    password,
+    setPassword,
+    handlePasswordChange,
+    passwordError,
+    handlePasswordErrorChange,
+  ] = useFormInput("");
+  const [
+    rePassword,
+    setRePassword,
+    handleRePasswordChange,
+    rePasswordError,
+    handleRePasswordErrorChange,
+  ] = useFormInput("");
+  const [topError, setTopError] = useState("");
 
   return (
     <div className="form-container">
       <form onSubmit={onSubmit}>
-        {error.top === "" ? "" : <p className=" text-danger">{error.top}</p>}
+        {topError === "" ? "" : <p className=" text-danger">{topError}</p>}
         <Input
           label="Username"
           type="text"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          error={error.username}
+          onChange={handleUsernameChange}
+          error={usernameError}
           autoFocus={true}
         />
         <Input
           label="Password"
           type="password"
           value={password}
-          onChange={handlePasswordChange}
-          error={error.password}
+          onChange={handlePasswordChange(isMatch)}
+          error={passwordError}
         />
         <Input
           label="RePassword"
           type="password"
           value={rePassword}
-          onChange={handleRePasswordChange}
-          error={error.rePassword}
+          onChange={handleRePasswordChange(isMatch)}
+          error={rePasswordError}
         />
         <Button type="submit" color="primary">
           Register
@@ -54,23 +70,13 @@ const Register = () => {
   async function onSubmit(e) {
     e.preventDefault();
     if (password !== rePassword) {
-      const errors = error;
-      errors.rePassword = "Password does not match";
-      setError(errors);
+      handleRePasswordErrorChange("Password does not match");
       return;
-    }
-
-    if (password.indexOf(" ") !== -1) {
-      const errors = error;
-      errors.password = "Password cant have blank";
-      setError(errors);
+    } else if (password.indexOf(" ") !== -1) {
+      handlePasswordErrorChange("Password cant have blank");
       return;
-    }
-
-    if (username.indexOf(" ") !== -1) {
-      const errors = error;
-      errors.username = "Username cant have blank";
-      setError(errors);
+    } else if (username.indexOf(" ") !== -1) {
+      handleUsernameErrorChange("Username cant have blank");
       return;
     }
 
@@ -81,43 +87,29 @@ const Register = () => {
       });
       window.location = "/";
     } catch (err) {
-      if (err.response.status === 400 || err.response.status === 500) {
-        const { data } = err.response;
+      if (err?.response?.status === 400 || err?.response?.status === 500) {
+        if (err?.response) {
+          const { path, message } = err.response.data;
+          handleUsernameErrorChange("");
+          handlePasswordErrorChange("");
+          setTopError("");
 
-        setError({
-          username: data.path === "username" ? data.message : "",
-          password: data.path === "password" ? data.message : "",
-          top: data.path === "top" ? data.message : "",
-        });
+          if (path === "username") handleUsernameErrorChange(message);
+          else if (path === "password") handlePasswordErrorChange(message);
+          else if (path === "top") setTopError(message);
+        }
       }
     }
   }
-
-  function handlePasswordChange(e) {
-    if (rePassword !== e.target.value) {
-      const errors = error;
-      errors.rePassword = "Password does not match";
-      setError(errors);
+  function isMatch(e, input) {
+    if (input === password && rePassword !== e.target.value) {
+      handleRePasswordErrorChange("Passwords does not match");
+    } else if (input === rePassword && password !== e.target.value) {
+      handlePasswordErrorChange("Passwords does not match");
     } else {
-      const errors = error;
-      errors.rePassword = "";
-      setError(errors);
+      handlePasswordErrorChange("");
+      handleRePasswordErrorChange("");
     }
-
-    setPassword(e.target.value);
-  }
-
-  function handleRePasswordChange(e) {
-    if (password !== e.target.value) {
-      const errors = error;
-      errors.rePassword = "Password does not match";
-      setError(errors);
-    } else {
-      const errors = error;
-      errors.rePassword = "";
-      setError(errors);
-    }
-    setRePassword(e.target.value);
   }
 };
 

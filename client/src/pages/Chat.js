@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import config from "../../config";
+import config from "../config";
 import Rooms from "../components/Rooms";
 import MessageBox from "../components/MessageBox";
 import TypeBar from "../components/TypeBar";

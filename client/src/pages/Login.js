@@ -1,41 +1,53 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import config from "../../config";
+import config from "../config";
+
+import useFormInput from "../hooks/useFormInput";
 import Input from "../components/common/Input/Input";
 import Button from "../components/common/Button/Button";
+
 import "./Form.css";
 
 let URL = config.URL + "/api/auth";
 
 const Login = ({ onSetUser }) => {
-  const [username, setUsername] = useState("test1");
-  const [password, setPassword] = useState("test1");
-  const [error, setError] = useState({
-    top: "",
-    username: "",
-    password: "",
-  });
+  const [
+    username,
+    setUsername,
+    handleUsernameChange,
+    usernameError,
+    handleUsernameErrorChange,
+  ] = useFormInput("test1");
+
+  const [
+    password,
+    setPassword,
+    handlePasswordChange,
+    passwordError,
+    handlePasswordErrorChange,
+  ] = useFormInput("test1");
+  const [topError, setTopError] = useState("");
   const history = useHistory();
 
   return (
     <div className="form-container">
       <form onSubmit={onSubmit}>
-        {error.top === "" ? "" : <p className=" text-danger">{error.top}</p>}
+        {topError === "" ? "" : <p className=" text-danger">{topError}</p>}
         <Input
           label="Username"
           type="text"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          error={error.username}
+          onChange={handleUsernameChange}
+          error={usernameError}
           autoFocus={true}
         />
         <Input
           label="Password"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          error={error.password}
+          onChange={handlePasswordChange}
+          error={passwordError}
         />
         <div className="d-flex">
           <Button type="submit" color="primary">
@@ -56,13 +68,14 @@ const Login = ({ onSetUser }) => {
       onSetUser(response.data.username);
     } catch (err) {
       if (err?.response) {
-        const { data } = err.response;
+        const { path, message } = err.response.data;
+        handleUsernameErrorChange("");
+        handlePasswordErrorChange("");
+        setTopError("");
 
-        setError({
-          username: data.path === "username" ? data.message : "",
-          password: data.path === "password" ? data.message : "",
-          top: data.path === "top" ? data.message : "",
-        });
+        if (path === "username") handleUsernameErrorChange(message);
+        else if (path === "password") handlePasswordErrorChange(message);
+        else if (path === "top") setTopError(message);
       }
     }
   }
