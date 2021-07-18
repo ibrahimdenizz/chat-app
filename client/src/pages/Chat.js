@@ -1,16 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import config from "../../config";
 import Rooms from "../components/Rooms";
 import MessageBox from "../components/MessageBox";
 import TypeBar from "../components/TypeBar";
 import UsersList from "../components/UsersList";
 
-const URL =
-  process.env.NODE_ENV === "production"
-    ? "/api/users"
-    : "http://localhost:5000/api/users";
-
-let date = Date.now();
+const URL = config.URL + "/api/users";
+let prevDate = Date.now();
 
 const Chat = ({ username, socket }) => {
   const [messages, setMessages] = useState([]);
@@ -134,8 +131,8 @@ const Chat = ({ username, socket }) => {
   }
 
   function onType(msg) {
-    if (msg !== "" && Date.now() - date > 1000) {
-      date = Date.now();
+    if (msg !== "" && Date.now() - prevDate > 1000) {
+      prevDate = Date.now();
       socket.emit("Typing", {
         user: username,
         room: room.id,

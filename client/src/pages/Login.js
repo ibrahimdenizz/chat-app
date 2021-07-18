@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
+import config from "../../config";
 import Input from "../components/common/Input/Input";
 import Button from "../components/common/Button/Button";
 import "./Form.css";
 
-let URL =
-  process.env.NODE_ENV === "production"
-    ? "/api/auth"
-    : "http://localhost:5000/api/auth";
+let URL = config.URL + "/api/auth";
 
 const Login = ({ onSetUser }) => {
   const [username, setUsername] = useState("test1");

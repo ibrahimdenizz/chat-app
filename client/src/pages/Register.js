@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import config from "../../config";
 import Button from "../components/common/Button/Button";
 import Input from "../components/common/Input/Input";
 import "./Form.css";
 
-let url =
-  process.env.NODE_ENV === "production"
-    ? "/api/users"
-    : "http://localhost:5000/api/users";
+const URL = config.URL + "/api/users";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -77,7 +75,7 @@ const Register = () => {
     }
 
     try {
-      await axios.post(url, {
+      await axios.post(URL, {
         username: username,
         password: password,
       });
