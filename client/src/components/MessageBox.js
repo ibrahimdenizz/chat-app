@@ -5,7 +5,7 @@ import TypeBar from "./TypeBar";
 const MessageBox = ({
   messages,
   username,
-  room,
+  activeRoom,
   endOfChat,
   userTyping,
   sendMessage,
@@ -16,7 +16,7 @@ const MessageBox = ({
       <MessageField
         messages={messages}
         username={username}
-        room={room}
+        activeRoom={activeRoom}
         endOfChat={endOfChat}
         typer={userTyping}
       />

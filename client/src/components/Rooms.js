@@ -9,6 +9,7 @@ const Drawer = ({
   addRoom,
   setAddRoom,
   onAddRoom,
+  activeRoom,
 }) => {
   return (
     <div className="col-2 p-0  ">
@@ -37,7 +38,9 @@ const Drawer = ({
             <li
               key={room.id}
               onClick={() => onChangeRoom(room)}
-              className="list-group-item list-group-item-action btn"
+              className={`list-group-item ${
+                room.id === activeRoom.id ? "active" : ""
+              } list-group-item-action btn`}
             >
               <div className=" container row w-100 text-break p-0 m-0">
                 <div className="col-11 p-0">{room.name}</div>
@@ -45,7 +48,12 @@ const Drawer = ({
                   className="btn col-1 p-0"
                   onClick={() => onLeaveRoom(room)}
                 >
-                  <FontAwesomeIcon icon={faTimes} />
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    style={{
+                      color: room.id === activeRoom.id ? "white" : "black",
+                    }}
+                  />
                 </div>
               </div>
             </li>

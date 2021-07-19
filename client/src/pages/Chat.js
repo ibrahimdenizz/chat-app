@@ -13,7 +13,7 @@ var prevDate = Date.now();
 
 const Chat = ({ username, socket }) => {
   const [messages, setMessages] = useState([]);
-  const [room, setRoom] = useState(1);
+  const [activeRoom, setActiveRoom] = useState(1);
   const [userTyping, setUserTyping] = useState({});
   const [addRoom, setAddRoom] = useState("");
   const [users, setUsers] = useState([]);
@@ -42,7 +42,7 @@ const Chat = ({ username, socket }) => {
       try {
         const { data } = await axios.get(USERS_ENDPOINT);
         setUsers(data);
-        setRoom({
+        setActiveRoom({
           id: "Public 1",
           name: "Public 1",
         });
@@ -57,16 +57,17 @@ const Chat = ({ username, socket }) => {
   }, [messages, userTyping]);
   useEffect(() => {
     socket.changeRoom({
-      room: room.id,
-      isPrivate: room.isPrivate ? true : false,
+      room: activeRoom.id,
+      isPrivate: activeRoom.isPrivate ? true : false,
     });
-  }, [room, socket]);
+  }, [activeRoom, socket]);
 
   return (
     <div className="row container h-100 py-5 ">
       <Rooms
         onChangeRoom={onChangeRoom}
         rooms={rooms}
+        activeRoom={activeRoom}
         onLeaveRoom={onLeaveRoom}
         addRoom={addRoom}
         setAddRoom={setAddRoom}
@@ -75,7 +76,7 @@ const Chat = ({ username, socket }) => {
       <MessageBox
         messages={messages}
         username={username}
-        room={room}
+        activeRoom={activeRoom}
         endOfChat={endOfChat}
         userTyping={userTyping}
         sendMessage={sendMessage}
@@ -125,14 +126,14 @@ const Chat = ({ username, socket }) => {
     socket.sendMessage({
       data,
       user: username,
-      room: room.id,
-      isPrivate: room.isPrivate ? true : false,
+      room: activeRoom.id,
+      isPrivate: activeRoom.isPrivate ? true : false,
     });
     console.log(messages);
   }
 
   function onChangeRoom(room) {
-    setRoom(room);
+    setActiveRoom(room);
   }
 
   function onType(msg) {
@@ -140,8 +141,8 @@ const Chat = ({ username, socket }) => {
       prevDate = Date.now();
       socket.onTyping({
         user: username,
-        room: room.id,
-        isPrivate: room.isPrivate ? true : false,
+        room: activeRoom.id,
+        isPrivate: activeRoom.isPrivate ? true : false,
       });
     }
   }
@@ -162,7 +163,7 @@ const Chat = ({ username, socket }) => {
       prevRooms.splice(index, 1);
       return prevRooms;
     });
-    setRoom(1);
+    setActiveRoom(1);
     socket.leaveRoom(room);
   }
 };

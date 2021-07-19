@@ -8,9 +8,10 @@ import Chat from "./pages/Chat";
 import NotFound from "./components/NotFound";
 import Register from "./pages/Register";
 import Socket from "./services/socketService";
-const URL =
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:5000";
-var socket;
+import config from "./config";
+
+const URL = config.URL;
+
 function App() {
   const [socket, setSocket] = useState();
   const [username, setUsername] = useState("");
