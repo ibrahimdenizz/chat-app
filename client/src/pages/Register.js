@@ -13,21 +13,18 @@ const URL = config.URL + "/api/users";
 const Register = () => {
   const [
     username,
-    setUsername,
     handleUsernameChange,
     usernameError,
     handleUsernameErrorChange,
   ] = useFormInput("");
   const [
     password,
-    setPassword,
     handlePasswordChange,
     passwordError,
     handlePasswordErrorChange,
   ] = useFormInput("");
   const [
     rePassword,
-    setRePassword,
     handleRePasswordChange,
     rePasswordError,
     handleRePasswordErrorChange,

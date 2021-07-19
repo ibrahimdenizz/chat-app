@@ -14,7 +14,7 @@ function useFormInput(initialValue = "") {
     setInput(e.target.value);
   }
 
-  return [input, setInput, handleChange, error, setError];
+  return [input, handleChange, error, setError];
 }
 
 export default useFormInput;

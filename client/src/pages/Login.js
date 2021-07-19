@@ -14,7 +14,6 @@ let URL = config.URL + "/api/auth";
 const Login = ({ onSetUser }) => {
   const [
     username,
-    setUsername,
     handleUsernameChange,
     usernameError,
     handleUsernameErrorChange,
@@ -22,7 +21,6 @@ const Login = ({ onSetUser }) => {
 
   const [
     password,
-    setPassword,
     handlePasswordChange,
     passwordError,
     handlePasswordErrorChange,
