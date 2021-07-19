@@ -6,8 +6,9 @@ import MessageBox from "../components/MessageBox";
 import TypeBar from "../components/TypeBar";
 import UsersList from "../components/UsersList";
 
-const URL = config.URL + "/api/users";
-let prevDate = Date.now();
+const USERS_ENDPOINT = config.URL + "/api/users";
+
+var prevDate = Date.now();
 
 const Chat = ({ username, socket }) => {
   const [messages, setMessages] = useState([]);
@@ -29,9 +30,16 @@ const Chat = ({ username, socket }) => {
   const endOfChat = useRef();
 
   useEffect(() => {
+    if (socket) {
+      subscribeAll();
+      socket.getOnlineUsers();
+    }
+  }, [socket]);
+
+  useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.get(URL);
+        const { data } = await axios.get(USERS_ENDPOINT);
         setUsers(data);
         setRoom({
           id: "Public 1",
@@ -40,38 +48,26 @@ const Chat = ({ username, socket }) => {
       } catch (err) {
         console.log(err?.response?.data?.message);
       }
-      socket.emit("online user", { username, socketId: socket.id, room });
     })();
   }, []);
 
   useEffect(() => {
-    socket.on("chat message", (msg) => {
-      setMessages((prevItems) => [...prevItems, msg]);
-    });
-    socket.on("Typing", (user) => {
-      if (user.user !== username) setUserTyping(() => user);
-    });
-    setInterval(() => {
-      setUserTyping({});
-    }, 7000);
-  }, []);
-  useEffect(() => {
     endOfChat.current.scrollIntoView({ behavior: "smooth" });
   }, [messages, userTyping]);
   useEffect(() => {
-    socket.emit("change room", {
+    socket.changeRoom({
       room: room.id,
       isPrivate: room.isPrivate ? true : false,
     });
-  }, [room]);
+  }, [room, socket]);
 
   return (
     <div className="row container h-100 py-5 ">
       <div className="col-2 p-0  ">
-        <div class="input-group">
+        <div className="input-group">
           <input
             type="text"
-            class="form-control"
+            className="form-control"
             placeholder="Add Room"
             aria-label="Add Room"
             aria-describedby="button-add"
@@ -79,7 +75,7 @@ const Chat = ({ username, socket }) => {
             onChange={(e) => setAddRoom(e.target.value)}
           />
           <button
-            class="btn btn-outline-secondary"
+            className="btn btn-outline-secondary"
             type="button"
             id="button-add"
             onClick={onAddRoom}
@@ -116,8 +112,37 @@ const Chat = ({ username, socket }) => {
     </div>
   );
 
+  function subscribeAll() {
+    socket.subscribe("chat message", (msg) => {
+      setMessages((prevItems) => [...prevItems, msg]);
+    });
+
+    socket.subscribe("Typing", (user) => {
+      if (user.user !== username) setUserTyping(() => user);
+    });
+
+    socket.subscribe("get online user", (onlineUsers) => {
+      console.log("online", onlineUsers);
+      setUsers((prevUsers) => {
+        prevUsers.forEach((user) => {
+          user.isOnline = false;
+        });
+        onlineUsers.forEach((user) => {
+          prevUsers
+            .filter((a) => a.username === user?.username)
+            .forEach((user2) => {
+              user2.isOnline = true;
+              user2.socketId = user.socketId;
+            });
+        });
+
+        return [...prevUsers];
+      });
+    });
+  }
+
   function sendMessage(data) {
-    socket.emit("chat message", {
+    socket.sendMessage({
       data,
       user: username,
       room: room.id,
@@ -133,7 +158,7 @@ const Chat = ({ username, socket }) => {
   function onType(msg) {
     if (msg !== "" && Date.now() - prevDate > 1000) {
       prevDate = Date.now();
-      socket.emit("Typing", {
+      socket.onTyping({
         user: username,
         room: room.id,
         isPrivate: room.isPrivate ? true : false,
@@ -145,7 +170,7 @@ const Chat = ({ username, socket }) => {
     const index = users.findIndex((user) => user.username === addRoom);
 
     if (addRoom !== "" && index === -1) {
-      socket.emit("join room", addRoom);
+      socket.joinRoom(addRoom);
       setRooms((prevRooms) => [...prevRooms, { id: addRoom, name: addRoom }]);
       setAddRoom("");
     }
@@ -158,7 +183,7 @@ const Chat = ({ username, socket }) => {
       return prevRooms;
     });
     setRoom(1);
-    socket.emit("leave room", room);
+    socket.leaveRoom(room);
   }
 };
 

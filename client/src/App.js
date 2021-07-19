@@ -1,22 +1,33 @@
-import { useState } from "react";
-import { io } from "socket.io-client";
+import { useState, useEffect } from "react";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
+import { io } from "socket.io-client";
+
 import "./App.css";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
 import NotFound from "./components/NotFound";
 import Register from "./pages/Register";
-
-const url =
+import Socket from "./services/socketService";
+const URL =
   process.env.NODE_ENV === "production" ? "" : "http://localhost:5000";
-
-console.log(url);
-
-const socket = io(url);
-
+var socket;
 function App() {
+  const [socket, setSocket] = useState();
   const [username, setUsername] = useState("");
   const history = useHistory();
+
+  useEffect(() => {
+    if (username)
+      setSocket(
+        new Socket(URL, {
+          username,
+          room: {
+            id: "Public 1",
+            name: "Public 1",
+          },
+        })
+      );
+  }, [username]);
 
   const onSetUser = (name) => {
     setUsername(name);
@@ -39,8 +50,10 @@ function App() {
           <Route exact path="/">
             {username === "" ? (
               <Redirect to="/login" />
-            ) : (
+            ) : socket ? (
               <Chat username={username} socket={socket} />
+            ) : (
+              ""
             )}
           </Route>
           <Redirect to="/not-found" />

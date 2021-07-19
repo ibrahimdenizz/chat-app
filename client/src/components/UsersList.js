@@ -1,31 +1,6 @@
 import React, { useEffect } from "react";
 
 const UsersList = ({ users, socket, setUsers, rooms, setRooms, username }) => {
-  useEffect(() => {
-    socket.on("get online user", (onlineUsers) => {
-      console.log("online", onlineUsers);
-      setUsers((prevUsers) => {
-        prevUsers.forEach((user) => {
-          user.isOnline = false;
-        });
-        onlineUsers.forEach((user) => {
-          prevUsers
-            .filter((a) => a.username === user?.username)
-            .forEach((user2) => {
-              user2.isOnline = true;
-              user2.socketId = user.socketId;
-            });
-        });
-
-        return [...prevUsers];
-      });
-    });
-  }, [socket, setUsers]);
-
-  useEffect(() => {
-    socket.emit("get online user", "get");
-  }, [socket]);
-
   const onClick = (user) => {
     if (user.isOnline === true) {
       const index = rooms.findIndex((a) => a.name === user.username);

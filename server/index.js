@@ -1,6 +1,7 @@
 const config = require("config");
 const express = require("express");
 const path = require("path");
+const redis = require("./util/redis-queries");
 
 const chatHandler = require("./socket/chatHandler");
 const userHandler = require("./socket/userHandler");
@@ -22,9 +23,20 @@ require("./start/routes")(app);
 
 io.on("connection", onConnection);
 
-function onConnection(socket) {
+async function onConnection(socket) {
   socket.join("Public 1");
   socket.join("Public 2");
+
+  try {
+    const user = JSON.parse(socket.handshake.query.user);
+    user.socketId = socket.id;
+    await redis.setUser(user);
+    const onlineUsers = await redis.getOnlineUsers();
+    console.log("online users", onlineUsers);
+    io.emit("get online user", onlineUsers);
+  } catch (error) {
+    console.error(error);
+  }
 
   chatHandler(io, socket);
   userHandler(io, socket);

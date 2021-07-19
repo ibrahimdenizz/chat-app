@@ -21,6 +21,7 @@ function getOnlineUsers() {
         if (!Array.isArray(socketIdReply)) socketIdReply = [socketIdReply];
         redisClient.mget(socketIdReply, (err, userReply) => {
           if (!Array.isArray(userReply)) {
+            console.log(userReply);
             if (!userReply) reject("Not found any users");
             else resolve({ socketId: socketIdReply, ...JSON.parse(userReply) });
           } else {
