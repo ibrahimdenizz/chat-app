@@ -1,22 +1,28 @@
 import React from "react";
-import Message from "./common/Message";
+import MessageField from "./MessageField";
+import TypeBar from "./TypeBar";
 
-function MessageBox({ messages, username, room, endOfChat, typer }) {
+const MessageBox = ({
+  messages,
+  username,
+  room,
+  endOfChat,
+  userTyping,
+  sendMessage,
+  onType,
+}) => {
   return (
-    <div className="container border border-black w-100 h-75 overflow-auto">
-      <ul className="list-group w-100 h-100 list-group-flush ">
-        {messages
-          .filter((msg) => msg.room === room.id)
-          .map((msg) => (
-            <Message key={msg.id} message={msg} username={username} />
-          ))}{" "}
-        {typer && typer.user !== "" && typer.room === room.id ? (
-          <p>{typer.user} typing</p>
-        ) : null}
-        <p ref={endOfChat}></p>
-      </ul>
+    <div className="col-8 p-0 h-100">
+      <MessageField
+        messages={messages}
+        username={username}
+        room={room}
+        endOfChat={endOfChat}
+        typer={userTyping}
+      />
+      <TypeBar sendMessage={sendMessage} onType={onType} />
     </div>
   );
-}
+};
 
 export default MessageBox;

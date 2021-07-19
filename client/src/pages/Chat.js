@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import config from "../config";
 import Rooms from "../components/Rooms";
-import MessageBox from "../components/MessageBox";
+import MessageField from "../components/MessageField";
 import TypeBar from "../components/TypeBar";
 import UsersList from "../components/UsersList";
+import MessageBox from "../components/MessageBox";
 
 const USERS_ENDPOINT = config.URL + "/api/users";
 
@@ -63,52 +64,31 @@ const Chat = ({ username, socket }) => {
 
   return (
     <div className="row container h-100 py-5 ">
-      <div className="col-2 p-0  ">
-        <div className="input-group">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Add Room"
-            aria-label="Add Room"
-            aria-describedby="button-add"
-            value={addRoom}
-            onChange={(e) => setAddRoom(e.target.value)}
-          />
-          <button
-            className="btn btn-outline-secondary"
-            type="button"
-            id="button-add"
-            onClick={onAddRoom}
-          >
-            Add
-          </button>
-        </div>
-        <Rooms
-          onChangeRoom={onChangeRoom}
-          rooms={rooms}
-          onLeaveRoom={onLeaveRoom}
-        />
-      </div>
-      <div className="col-8 p-0 h-100">
-        <MessageBox
-          messages={messages}
-          username={username}
-          room={room}
-          endOfChat={endOfChat}
-          typer={userTyping}
-        />
-        <TypeBar sendMessage={sendMessage} onType={onType} />
-      </div>
-      <div className="col-2 p-0 ">
-        <UsersList
-          users={users}
-          socket={socket}
-          setUsers={setUsers}
-          rooms={rooms}
-          setRooms={setRooms}
-          username={username}
-        />
-      </div>
+      <Rooms
+        onChangeRoom={onChangeRoom}
+        rooms={rooms}
+        onLeaveRoom={onLeaveRoom}
+        addRoom={addRoom}
+        setAddRoom={setAddRoom}
+        onAddRoom={onAddRoom}
+      />
+      <MessageBox
+        messages={messages}
+        username={username}
+        room={room}
+        endOfChat={endOfChat}
+        userTyping={userTyping}
+        sendMessage={sendMessage}
+        onType={onType}
+      />
+      <UsersList
+        users={users}
+        socket={socket}
+        setUsers={setUsers}
+        rooms={rooms}
+        setRooms={setRooms}
+        username={username}
+      />
     </div>
   );
 
