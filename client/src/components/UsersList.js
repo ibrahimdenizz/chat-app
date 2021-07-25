@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 const UsersList = ({ users, socket, setUsers, rooms, setRooms, username }) => {
   const onClick = (user) => {

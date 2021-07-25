@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import config from "../config";
 import Rooms from "../components/Rooms";
-import MessageField from "../components/MessageField";
-import TypeBar from "../components/TypeBar";
 import UsersList from "../components/UsersList";
 import MessageBox from "../components/MessageBox";
 
@@ -17,16 +15,7 @@ const Chat = ({ username, socket }) => {
   const [userTyping, setUserTyping] = useState({});
   const [addRoom, setAddRoom] = useState("");
   const [users, setUsers] = useState([]);
-  const [rooms, setRooms] = useState([
-    {
-      id: "Public 1",
-      name: "Public 1",
-    },
-    {
-      id: "Public 2",
-      name: "Public 2",
-    },
-  ]);
+  const [rooms, setRooms] = useState(config.INIT_ROOM);
 
   const endOfChat = useRef();
 
@@ -42,10 +31,7 @@ const Chat = ({ username, socket }) => {
       try {
         const { data } = await axios.get(USERS_ENDPOINT);
         setUsers(data);
-        setActiveRoom({
-          id: "Public 1",
-          name: "Public 1",
-        });
+        setActiveRoom(config.INIT_ROOM[0]);
       } catch (err) {
         console.log(err?.response?.data?.message);
       }
@@ -56,10 +42,11 @@ const Chat = ({ username, socket }) => {
     endOfChat.current.scrollIntoView({ behavior: "smooth" });
   }, [messages, userTyping]);
   useEffect(() => {
-    socket.changeRoom({
-      room: activeRoom.id,
-      isPrivate: activeRoom.isPrivate ? true : false,
-    });
+    if (socket)
+      socket.changeRoom({
+        room: activeRoom.id,
+        isPrivate: activeRoom.isPrivate ? true : false,
+      });
   }, [activeRoom, socket]);
 
   return (

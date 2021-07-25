@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
-import { io } from "socket.io-client";
 
 import "./App.css";
 import Login from "./pages/Login";
