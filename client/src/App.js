@@ -36,30 +36,28 @@ function App() {
   };
 
   return (
-    <div className="container  h-100 ">
-      <div className="row h-100 d-flex justify-content-center align-content-center">
-        <Switch>
-          <Route path="/login">
-            <Login onSetUser={onSetUser} />
-          </Route>
-          <Route path="/register">
-            <Register />
-          </Route>
-          <Route path="/not-found">
-            <NotFound />
-          </Route>
-          <Route exact path="/">
-            {username === "" ? (
-              <Redirect to="/login" />
-            ) : socket ? (
-              <Chat username={username} socket={socket} />
-            ) : (
-              ""
-            )}
-          </Route>
-          <Redirect to="/not-found" />
-        </Switch>
-      </div>
+    <div className="main-wrapper ">
+      <Switch>
+        <Route path="/login">
+          <Login onSetUser={onSetUser} />
+        </Route>
+        <Route path="/register">
+          <Register />
+        </Route>
+        <Route path="/not-found">
+          <NotFound />
+        </Route>
+        <Route exact path="/">
+          {username === "" ? (
+            <Redirect to="/login" />
+          ) : socket ? (
+            <Chat username={username} socket={socket} />
+          ) : (
+            ""
+          )}
+        </Route>
+        <Redirect to="/not-found" />
+      </Switch>
     </div>
   );
 }
