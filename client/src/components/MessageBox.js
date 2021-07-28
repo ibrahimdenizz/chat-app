@@ -1,6 +1,6 @@
 import React from "react";
 import MessageField from "./MessageField";
-import TypeBar from "./TypeBar";
+import MessageTypeBar from "./MessageTypeBar";
 import "./MessageBox.css";
 
 const MessageBox = ({
@@ -21,7 +21,7 @@ const MessageBox = ({
         endOfChat={endOfChat}
         typer={userTyping}
       />
-      <TypeBar sendMessage={sendMessage} onType={onType} />
+      <MessageTypeBar sendMessage={sendMessage} onType={onType} />
     </div>
   );
 };
