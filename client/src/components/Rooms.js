@@ -1,8 +1,8 @@
 import React from "react";
 
 import "./Rooms.css";
-import RoomsField from "./RoomsField";
 import RoomsTypeBar from "./RoomsTypeBar";
+import RoomsList from "./RoomsList";
 
 const Drawer = ({
   onChangeRoom,
@@ -15,12 +15,12 @@ const Drawer = ({
 }) => {
   return (
     <div className="rooms-wrapper">
-      <RoomsField
+      <RoomsTypeBar
         addRoom={addRoom}
         setAddRoom={setAddRoom}
         onAddRoom={onAddRoom}
       />
-      <RoomsTypeBar
+      <RoomsList
         rooms={rooms}
         onChangeRoom={onChangeRoom}
         onLeaveRoom={onLeaveRoom}
