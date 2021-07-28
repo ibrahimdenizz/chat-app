@@ -8,7 +8,7 @@ module.exports = function (io, socket) {
 
   socket.on("change room", async ({ room, isPrivate }) => {
     try {
-      const user = await redis.updateUser(socket.id, room.id);
+      const user = await redis.updateUser(socket.id, room);
       io.to(room).emit("chat message", {
         data: "joined",
         user: user.username,
