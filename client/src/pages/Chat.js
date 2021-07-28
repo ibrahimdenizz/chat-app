@@ -137,8 +137,9 @@ const Chat = ({ username, socket }) => {
 
   function onAddRoom() {
     const index = users.findIndex((user) => user.username === addRoom);
+    const isExist = rooms.findIndex((room) => room.name === addRoom);
 
-    if (addRoom !== "" && index === -1) {
+    if (addRoom !== "" && index === -1 && isExist === -1) {
       socket.joinRoom(addRoom);
       setRooms((prevRooms) => [...prevRooms, { id: addRoom, name: addRoom }]);
       setAddRoom("");
