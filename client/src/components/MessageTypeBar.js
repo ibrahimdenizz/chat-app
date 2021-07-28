@@ -2,14 +2,14 @@ import React, { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSmile } from "@fortawesome/free-solid-svg-icons";
 import Picker from "emoji-picker-react";
+import "./MessageTypeBar.css";
 
 function TypeBar({ sendMessage, onType }) {
   const [msg, setMsg] = useState("");
   const [openPicker, setOpenPicker] = useState(0);
   const inputRef = useRef();
 
-  const onSumbit = (e) => {
-    e.preventDefault();
+  const onClick = (e) => {
     if (msg !== "") sendMessage(msg);
     setMsg("");
     inputRef.current.focus();
@@ -27,31 +27,38 @@ function TypeBar({ sendMessage, onType }) {
   };
 
   return (
-    <div className="position-relative">
-      <form onSubmit={onSumbit} className="form-group p-0   ">
-        <div className="row w-100 input-group mb-3 d-flex m-0 p-0 ">
-          <div className="btn btn-outline-primary col-1" onClick={onOpenPicker}>
-            <FontAwesomeIcon icon={faSmile} />
-          </div>
-
-          <input
-            value={msg}
-            onChange={(e) => {
-              setMsg(e.target.value);
-              onType(e.target.value);
-            }}
-            type="text"
-            className="form-control col-8"
-            autoFocus
-            ref={inputRef}
-          />
-          <button type="submit" className="btn btn-outline-primary col-3">
-            Send
-          </button>
+    <>
+      <div className=" message-typebar-wrapper ">
+        <div className="message-typebar-btn" onClick={onOpenPicker}>
+          <FontAwesomeIcon icon={faSmile} />
         </div>
-      </form>
-      {openPicker ? <Picker onEmojiClick={onEmojiClick} /> : ""}
-    </div>
+
+        <input
+          value={msg}
+          onChange={(e) => {
+            setMsg(e.target.value);
+            onType(e.target.value);
+          }}
+          type="text"
+          className="message-typebar-field"
+          autoFocus
+          ref={inputRef}
+        />
+        <button
+          className="message-typebar-btn message-typebar-send-btn"
+          onClick={onClick}
+        >
+          Send
+        </button>
+      </div>
+      {openPicker ? (
+        <div className="message-typebar-picker">
+          <Picker onEmojiClick={onEmojiClick} />
+        </div>
+      ) : (
+        ""
+      )}
+    </>
   );
 }
 

@@ -1,0 +1,51 @@
+.message-typebar-wrapper {
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.message-typebar-btn {
+  display: inline-block;
+  flex: 0 0 10%;
+  position: relative;
+  cursor: pointer;
+  width: 100%;
+  text-decoration: none;
+  text-align: center;
+  user-select: none;
+  background-color: white;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+.message-typebar-btn:hover {
+  color: white;
+  background-color: #007bff;
+}
+
+.message-typebar-field {
+  flex: 0 0 70%;
+  color: var(--bs-gray-dark);
+}
+
+.message-typebar-field:focus,
+.message-typebar-field:active {
+  border-color: #007bff;
+  outline: none;
+}
+
+.message-typebar-send-btn {
+  flex: 0 0 20%;
+}
+
+.message-typebar-picker {
+  position: relative;
+  top: -365px;
+}
