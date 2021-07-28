@@ -2,7 +2,7 @@ import React from "react";
 
 import "./Rooms.css";
 import RoomsField from "./RoomsField";
-import RoomsList from "./RoomsList";
+import RoomsTypeBar from "./RoomsTypeBar";
 
 const Drawer = ({
   onChangeRoom,
@@ -20,7 +20,7 @@ const Drawer = ({
         setAddRoom={setAddRoom}
         onAddRoom={onAddRoom}
       />
-      <RoomsList
+      <RoomsTypeBar
         rooms={rooms}
         onChangeRoom={onChangeRoom}
         onLeaveRoom={onLeaveRoom}
