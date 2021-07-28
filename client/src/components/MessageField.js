@@ -1,10 +1,11 @@
 import React from "react";
-import Message from "./common/Message";
+import Message from "./common/Message/Message";
+import "./MessageField.css";
 
 function MessageField({ messages, username, activeRoom, endOfChat, typer }) {
   return (
-    <div className="container border border-black w-100 h-75 overflow-auto">
-      <ul className="list-group w-100 h-100 list-group-flush ">
+    <div className="message-field-wrapper">
+      <ul className="message-field-list">
         {messages
           .filter((msg) => msg.room === activeRoom.id)
           .map((msg) => (

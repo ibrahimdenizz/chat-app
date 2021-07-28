@@ -1,0 +1,24 @@
+.message {
+  display: flex;
+  padding: 0.75rem 1.25rem;
+  background-color: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  width: 100%;
+  margin: 0.5rem;
+  flex-direction: row;
+}
+
+.message-reverse {
+  flex-direction: row-reverse;
+}
+
+.message-reverse > .message-text {
+  text-align: left;
+}
+
+.message-text {
+  width: 100%;
+  word-break: break-word;
+  word-wrap: break-word;
+  text-align: right;
+}
