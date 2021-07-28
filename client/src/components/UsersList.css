@@ -1,0 +1,42 @@
+.user-list-wrapper {
+  flex: 0 0 17%;
+  padding: 0;
+  width: 100%;
+  overflow: auto;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.user-list-item {
+  padding: 0.75rem 1.25rem;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  width: 100%;
+  color: #495057;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.user-list-item:hover {
+  filter: brightness(95%);
+}
+
+.user-list-item:active {
+  filter: brightness(85%);
+}
+
+.online-user {
+  color: var(--bs-success);
+}
+
+.offline-user {
+  color: var(--bs-danger);
+}
