@@ -4,6 +4,7 @@ import config from "../config";
 import Rooms from "../components/Rooms";
 import UsersList from "../components/UsersList";
 import MessageBox from "../components/MessageBox";
+import "./Chat.css";
 
 const USERS_ENDPOINT = config.URL + "/api/users";
 
@@ -50,7 +51,7 @@ const Chat = ({ username, socket }) => {
   }, [activeRoom, socket]);
 
   return (
-    <div className="row container h-100 py-5 ">
+    <div className="chat">
       <Rooms
         onChangeRoom={onChangeRoom}
         rooms={rooms}
