@@ -1,6 +1,7 @@
 import React from "react";
 import MessageField from "./MessageField";
 import TypeBar from "./TypeBar";
+import "./MessageBox.css";
 
 const MessageBox = ({
   messages,
@@ -12,7 +13,7 @@ const MessageBox = ({
   onType,
 }) => {
   return (
-    <div className="col-8 p-0 h-100">
+    <div className="message-box-wrapper">
       <MessageField
         messages={messages}
         username={username}
