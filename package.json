@@ -30,6 +30,6 @@
   },
   "devDependencies": {
     "eslint": "^8.13.0",
-    "eslint-plugin-react": "^7.29.3"
+    "eslint-plugin-react": "^7.31.6"
   }
 }
